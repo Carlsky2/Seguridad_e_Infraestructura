@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    image: carlosdeus/go-backend:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - mongo
+    networks:
+      - gomongonet
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - gomongonet
+
+volumes:
+  mongo-data:
+
+networks:
+  gomongonet:
