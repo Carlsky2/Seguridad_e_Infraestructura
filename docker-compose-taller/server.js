@@ -38,6 +38,38 @@ app.get('/setup', async (req, res) => {
     }
 })
 
+app.put('/', async (req, res) => {
+    const { id, nombre, edad } = req.body;
+    try {
+        const result = await pool.query(
+            'UPDATE usuarios SET nombre = $1, edad = $2 WHERE id = $3', [nombre, edad, id]);
+        if (result.rowCount === 0) {
+            res.status(404).send({ message: 'Usuario no encontrado' });
+        } else {
+            res.status(200).send({ message: 'Usuario actualizado correctamente' });
+        }
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+});
+
+// Eliminar un usuario existente
+app.delete('/', async (req, res) => {
+    const { id } = req.body;
+    try {
+        const result = await pool.query('DELETE FROM usuarios WHERE id = $1', [id]);
+        if (result.rowCount === 0) {
+            res.status(404).send({ message: 'Usuario no encontrado' });
+        } else {
+            res.status(200).send({ message: 'Usuario eliminado correctamente' });
+        }
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+});
+
 app.get('/drop', async (req, res) => {
     try {
         await pool.query('DROP TABLE IF EXISTS usuarios');
